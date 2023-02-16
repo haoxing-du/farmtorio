@@ -7,7 +7,7 @@ class StartScene extends Phaser.Scene {
     this.loadingText = this.add.text(
       500,
       400,
-      'Loading ...', { font: '16pt Arial', color: '#FFFFFF', align: 'center' }
+      'Loading ...', { font: '16pt Arial', color: '#FFFFFF', align: 'center' },
     );
     this.loadingText.setOrigin(0.5, 0.5);
   }
@@ -21,8 +21,8 @@ class StartScene extends Phaser.Scene {
     this.loadingText!.destroy();
 
     // Add background image
-    const startScreen = this.add.image(500, 400, 'StartScreen');
-    startScreen.setScale(500, 400);
+    const startScreen = this.add.image(500, 400, 'example');
+    //startScreen.setScale(500, 400);
 
     // Add a callback when a key is released
     this.input.keyboard.on('keyup', this.keyReleased, this)
