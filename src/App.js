@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import StartScene from './StartScene';
-import GUIScene from './gui'
+import UIScene from './UIScene'
 
 var config = {
   type: Phaser.AUTO,
@@ -18,5 +18,5 @@ var config = {
 var game = new Phaser.Game(config);
 
 game.scene.add('StartScene', StartScene);
-game.scene.add('GUIScene', GUIScene);
+game.scene.add('UIScene', UIScene);
 game.scene.start('StartScene');
