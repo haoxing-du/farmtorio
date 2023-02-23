@@ -4,17 +4,17 @@ const ONE_COMPONENT = 160;
 const TWO_COMPONENTS = 113.13;
 
 class StartScene extends Phaser.Scene {
+  
+  platforms;
+  player;
+  cursors;
+  stars;
+  score;
+  scoreText;
+  
   constructor () {
     super('StartScene');
   }
-
-  // platforms;
-  // player;
-  // cursors;
-  // stars;
-  // score;
-  // scoreText;
-
 
   preload() {
     this.load.image('sky', 'assets/sky.png');
@@ -74,20 +74,26 @@ class StartScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.platforms);
 
     this.cursors = this.input.keyboard.createCursorKeys();
+    this.keys = this.input.keyboard.addKeys('Q,E,R,F,Z,X');
 
+    // create stars
     this.stars = this.physics.add.group({
       key: 'star',
       repeat: 11,
-      setXY: {x: 12, y: 0, stepX: 70, stepY: 40}
+      setXY: {x: 0, y: 100, stepX: 50, stepY: 0}
     });
-
-    this.stars.children.iterate((child) => {
-      child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+    
+    this.bombs = this.physics.add.group({
+      key: 'bomb',
+      repeat: 11,
+      setXY: {x: 0, y: 200, stepX: 50, stepY: 0}
     });
 
     this.physics.add.collider(this.stars, this.platforms);
+    this.physics.add.collider(this.bombs, this.platforms);
 
-    this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
+    this.physics.add.overlap(this.player, this.stars, this.collectItem, null, this);
+    this.physics.add.overlap(this.player, this.bombs, this.collectItem, null, this);
 
     this.cameras.main.startFollow(this.player, true);
     this.cameras.main.setZoom(2);
@@ -101,7 +107,7 @@ class StartScene extends Phaser.Scene {
       this.player.setVelocityX(-vx);
       this.player.anims.play('left', true);
       vy = TWO_COMPONENTS;
-    } else if (this.cursors?.right.isDown) {
+    } else if (this.cursors.right.isDown) {
       this.player.setVelocityX(vx);
       this.player.anims.play('right', true);
       vy = TWO_COMPONENTS;
@@ -111,29 +117,25 @@ class StartScene extends Phaser.Scene {
       vy = ONE_COMPONENT
     }
 
-    if (this.cursors?.up.isDown) {
-      this.player?.setVelocityY(-vy);
+    if (this.cursors.up.isDown) {
+      this.player.setVelocityY(-vy);
       vx = TWO_COMPONENTS;
-    } else if (this.cursors?.down.isDown) {
-      this.player?.setVelocityY(vy);
+    } else if (this.cursors.down.isDown) {
+      this.player.setVelocityY(vy);
       vx = TWO_COMPONENTS;
     } else {
-      this.player?.setVelocityY(0);
+      this.player.setVelocityY(0);
       vx = ONE_COMPONENT;
     }
-
-    // this.scoreText.setXY(this.cameras.main.centerX + 16, this.cameras.main.y + 16)
-
-    // if (this.cursors?.up.isDown && this.player?.body.touching.down) {
-    //   this.player?.setVelocityY(-330);
-    // }
   }
 
-  collectStar(player, star) {
-    star.disableBody(true, true);
-    this.events.emit('incrementScore');
-    // this.score += 10;
-    // this.scoreText?.setText('score: ' + this.score);
+  collectItem(player, item) {
+    if (this.keys.Z.isDown){
+      // delete (not just disable) item
+      item.destroy();
+      // emit event to UI scene to add item to inventory
+      this.events.emit('addItem', [item.texture.key]);
+    }
   }
   
 }
