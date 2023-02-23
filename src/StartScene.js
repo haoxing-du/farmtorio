@@ -11,6 +11,7 @@ class StartScene extends Phaser.Scene {
   stars;
   score;
   scoreText;
+  inventory;
   
   constructor () {
     super('StartScene');
@@ -26,6 +27,9 @@ class StartScene extends Phaser.Scene {
       'assets/dude.png',
       { frameWidth: 32, frameHeight: 48 },
     );
+    this.inventory = {};
+    this.registry.set('inventory', this.inventory);
+    this.scene.stop('InventoryScene');
   }
 
   
@@ -127,14 +131,29 @@ class StartScene extends Phaser.Scene {
       this.player.setVelocityY(0);
       vx = ONE_COMPONENT;
     }
+
+    if (Phaser.Input.Keyboard.JustDown(this.keys.E)) {
+      if (this.scene.isActive('InventoryScene')) {
+        this.scene.stop('InventoryScene');
+      } else {
+        this.events.emit('initializeInventory', this.inventory);
+        this.scene.launch('InventoryScene');
+      }
+    } 
   }
 
   collectItem(player, item) {
-    if (this.keys.Z.isDown){
-      // delete (not just disable) item
+    if (this.keys.Z.isDown) {
       item.destroy();
+      let key = item.texture.key;
+      if (key in this.inventory) {
+        this.inventory[key] += 1;
+      } else {
+        this.inventory[key] = 1;
+      }
+      this.registry.set('inventory', this.inventory);
       // emit event to UI scene to add item to inventory
-      this.events.emit('addItem', [item.texture.key]);
+      // this.events.emit('updateInventory', this.inventory);
     }
   }
   

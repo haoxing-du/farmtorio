@@ -12,21 +12,14 @@ class UIScene extends Phaser.Scene {
   }
 
   create () {
-    let info = this.add.text(10, 10, 'Inventory:', { font: '32px', fill: '#000' });
+    let info = this.add.text(10, 10, 'Inventory:', { font: '28px', fill: '#000' });
 
-    let game = this.scene.get('StartScene');
-
-    game.events.on('addItem', (item) => {
-      
-      if (item in this.inventory) {
-        this.inventory[item] += 1;
-      } else{
-        this.inventory[item] = 1;
+    this.registry.events.on('changedata', (parent, key, data) => {
+      if (key === 'inventory') {
+        this.inventory = data;
+        // To replace with a real inventory; with limited space
+        info.setText('Inventory: ' + JSON.stringify(this.inventory));
       }
-
-      // set text to reflect inventory
-      info.setText('Inventory: ' + JSON.stringify(this.inventory));
-
     }, this);
   }
 }
