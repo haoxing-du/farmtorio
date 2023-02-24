@@ -11,7 +11,7 @@ class UIScene extends Phaser.Scene {
     // load graphics
   }
 
-  create () {
+  create() {
     let info = this.add.text(10, 10, 'Inventory:', { font: '28px', fill: '#000' });
 
     this.registry.events.on('changedata', (parent, key, data) => {

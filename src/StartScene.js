@@ -18,6 +18,8 @@ class StartScene extends Phaser.Scene {
   }
 
   preload() {
+    this.load.image('base_tiles', 'assets/world0.png');
+    this.load.tilemapTiledJSON('tilemap', 'assets/world0.json');
     this.load.image('sky', 'assets/sky.png');
     this.load.image('ground', 'assets/platform.png');
     this.load.image('star', 'assets/star.png');
@@ -37,7 +39,12 @@ class StartScene extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, 800, 600)
     this.cameras.main.setBounds(0, 0, 800, 600);
 
-    this.add.image(0, 0, 'sky').setOrigin(0).setScrollFactor(1);
+    // this.add.image(0, 0, 'base_tiles').setOrigin(0).setScrollFactor(1);
+    const map = this.make.tilemap({ key: 'tilemap' });
+    let tileset = map.addTilesetImage('tiles2', 'base_tiles');
+    map.createStaticLayer('Tile Layer 1', tileset);
+    map.createStaticLayer('Tile Layer 2', tileset);
+    // this.add.image(0, 0, 'sky').setOrigin(0).setScrollFactor(1);
 
     // create platforms
     this.platforms = this.physics.add.staticGroup();
